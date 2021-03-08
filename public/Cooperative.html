@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Co-op Clicker Game</title>
+        <meta charset="utf-8" />
+        <script src="/socket.io/socket.io.js"></script>
+        <script src="/js/Clicker.js"></script>
+        <script src="/css/button-styling.css"></script>
+
+        <style>
+            click-button {
+                font-size: 200%;
+                padding: 14px 40px;
+                text-align: center;
+                margin: 0px 10px 8px 10px;
+            }
+            bg-button{
+                font-size: 125%;
+                padding: 14px 40px;
+                text-align: center;
+                margin: 0px 10px 8px 10px;
+            }
+        </style>
+    </head>
+
+    <body>
+        <h2>Pick a Background</h2>
+        <!-- background color changing buttons -->
+        <button id="red" style="background-color:rgb(255, 0, 0); color:rgb(255, 255, 255)">RED</button>
+        <button id="blue" style="background-color:rgb(0, 0, 255); color:rgb(255, 255, 255)">BLUE</button>
+        <button id="green" style="background-color:rgb(0, 255, 0); color:rgb(255, 255, 255)">GREEN</button>
+        <br><br>
+
+        <h1>CLICK BELOW TO GAIN POINTS</h1>
+        <!-- clicker and upgrade buttons -->
+        <div>
+            <click-button onclick=oncl() id="click" style="background-color:rgb(0, 0, 0); color:rgb(255, 255, 255)">Click</click-button>
+        </div>
+        <h1 id="p">0 Points</h1>
+        <h1 id="iv">Multiplier: 0</h1>
+
+        <div>
+            <button onclick=upgrade() id="u" >Buy Upgrade for 50 Clicks</button>
+        </div>
+
+        <script>    //script tags put here to run after content is created
+            let socket = io();
+            
+            socket.on('connect', (data) => {
+                document.querySelector('#red').addEventListener('click', function() {
+                    socket.emit('red');
+                });
+
+                document.querySelector('#blue').addEventListener('click', function() {
+                    socket.emit('blue');
+                });
+
+                document.querySelector('#green').addEventListener('click', function() {
+                    socket.emit('green');
+                });
+
+                socket.on('color_change', (data) => {
+                    let colorStr = 'rgb(' + data.r + ', ' + data.g + ', ' + data.b + ')';
+                    document.body.style.backgroundColor = colorStr;
+
+                    console.log('color_change: ' + colorStr);
+                });
+            });
+        </script>
+
+    </body>
+</html>
